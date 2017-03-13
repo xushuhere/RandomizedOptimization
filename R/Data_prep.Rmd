@@ -1,0 +1,62 @@
+---
+title: "Data preparation"
+author: "Shu Xu"
+date: "3/4/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Read Data
+```{r}
+# breast cancer wisconsin data
+#setwd("/Data/")
+
+f_bcw <-file("../data/breast-cancer-wisconsin.data", open="r" )
+data_bcw <- read.table(f_bcw, fileEncoding="UTF-16", sep = ",",header=F)
+closeAllConnections()
+# To see the natural of the data
+#head(data_bcw)
+colnames(data_bcw) <- c("sample", 
+                  "clump",
+                  "size", 
+                  "hape",
+                  "adhesion",  
+                  "singleSize",  
+                  "bareNuclei",      
+                  "blandChromatin",   
+                  "normalNucleoli",   
+                  "mitoses",     
+                  "class") 
+#summary(data_bcw)
+#str(data_bcw)
+data_bcw$bareNuclei <- as.numeric(data_bcw$bareNuclei)
+data_bcw_missing <- data_bcw[!complete.cases(data_bcw),]
+data_bcw_cleaned <- data_bcw[complete.cases(data_bcw),]
+data_bcw_cleaned <- data_bcw_cleaned[-1]
+data_bcw_cleaned[-10] <- sapply(data_bcw_cleaned[-10], as.numeric)
+# change 10 to be 0 1.
+data_bcw_cleaned[,10] <- data_bcw_cleaned[,10]/2-1
+
+
+data_bcw_cleaned[-1] <- as.data.frame(scale(data_bcw_cleaned[-1]))
+# re-order the numbers, classification is the first one
+#data_bcw_cleaned <- data_bcw_cleaned[c( "class", colnames(data_bcw_cleaned)[1:8])]
+#colnames(data_bcw_cleaned)
+write.table(data_bcw_cleaned, file = "../data/bcw.csv", sep = ",", row.names = FALSE,col.names = FALSE, qmethod = "double")
+```
+
+
+# Set aside 30% sample data for testing
+```{r}
+set.seed(1)
+data_bcw_rand <- data_bcw_cleaned[order(runif(nrow(data_bcw_cleaned))), ]
+length_b <- 0.7*nrow(data_bcw_cleaned)
+b_train <- data_bcw_cleaned[1:length_b, ]
+b_test  <- data_bcw_cleaned[length_b:nrow(data_bcw_cleaned), ]
+write.table(b_test, file = "../data/btest.csv", sep = ",", row.names = FALSE,col.names = FALSE, qmethod = "double")
+write.table(b_train, file = "../data/btrain.csv", sep = ",", row.names = FALSE,col.names = FALSE, qmethod = "double")
+
+```

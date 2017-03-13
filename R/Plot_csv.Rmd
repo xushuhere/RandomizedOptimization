@@ -1,0 +1,386 @@
+---
+title: "plot running time csv"
+author: "Shu Xu"
+date: "3/8/2017"
+output: html_document
+---
+
+
+```{r,warning=FALSE, message=FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+# RHC
+## Choose the best RHC to plot the hill climbing
+```{r}
+data <- read.csv("../Results/Part1/RHC_btrain_run_1_iter_20000.csv", header = FALSE,sep=",")
+colnames(data) <- c("time", "Accuracy_test", "Accuracy_train")
+data <- subset(data, data$Accuracy_train >0)
+data$iterationNumber <- seq(1:20000)
+str(data)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_train, colour = "Accuracy_train"), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_test, colour = "Accuracy_test"), method = 'loess', na.rm=TRUE) + 
+  labs(title = "Accuracy per Iteration of Best RHC, one of the best traces", y = "", x="Iterations") +ylim(70,100)
+data_plot
+#ggsave("bestRHC.pdf")
+```
+## Choose the worst RHC to plot the hill climbing, local maxima
+```{r}
+worstRHC <- read.csv("../Results/Part1/RHC_btrain_run_5_iter_5000.csv", header = FALSE,sep=",")
+colnames(worstRHC) <- c("time", "Accuracy_test", "Accuracy_train")
+worstRHC <- subset(worstRHC, worstRHC$Accuracy_train >0)
+worstRHC$iterationNumber <- seq(1:5000)
+worstRHC_plot <- ggplot(worstRHC, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_train, colour = "Accuracy_train"), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_test, colour = "Accuracy_test"), method = 'loess', na.rm=TRUE) + 
+  labs(title = "Accuracy per Iteration of RHC, one of the worst traces", y = "", x="Iterations")
+worstRHC_plot
+#ggsave("bestRHC.pdf")
+```
+
+
+
+
+# SA
+## good sa result
+```{r}
+data <- read.csv("../Results/Part1/SA_btrain_run_1_iter_20000.csv", header = FALSE,sep=",")
+colnames(data) <- c("time", "Accuracy_test", "Accuracy_train")
+data <- subset(data, data$Accuracy_train >0)
+data$iterationNumber <- seq(1:20000)
+str(data)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_train, colour = "Accuracy_train"), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_test, colour = "Accuracy_test"), method = 'loess', na.rm=TRUE) + 
+  labs(title = "Accuracy per Iteration of SA, Start temperature 1E11, cooling rate 0.95", y = "", x="Iterations")
+data_plot
+#ggsave("bestRHC.pdf")
+```
+
+
+## SA starting temperature is not good
+```{r}
+data <- read.csv("../Results/Part1/SA_btrain_run_2_iter_10000.csv", header = FALSE,sep=",")
+colnames(data) <- c("time", "Accuracy_test", "Accuracy_train")
+data <- subset(data, data$Accuracy_train >0)
+data$iterationNumber <- seq(1:10000)
+str(data)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_train, colour = "Accuracy_train"), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_test, colour = "Accuracy_test"), method = 'loess', na.rm=TRUE) + 
+  labs(title = "Accuracy per Iteration of SA, Start temperature 1E11, cooling rate 1", y = "", x="Iterations")
+data_plot
+#ggsave("bestRHC.pdf")
+```
+
+
+## SA cold temperature, it is a kind of like RHC
+```{r}
+data <- read.csv("../Results/Part1/SA_btrain_run_5_iter_10000.csv", header = FALSE,sep=",")
+colnames(data) <- c("time", "Accuracy_test", "Accuracy_train")
+data <- subset(data, data$Accuracy_train >0)
+data$iterationNumber <- seq(1:10000)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_train, colour = "Accuracy_train"), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_test, colour = "Accuracy_test"), method = 'loess', na.rm=TRUE) + 
+  labs(title = "Accuracy per Iteration of SA, Start temperature 200, cooling rate 0.99", y = "", x="Iterations")
+data_plot
+#ggsave("bestRHC.pdf")
+```
+
+## Chaotic SA cold temperature is  good
+```{r}
+data <- read.csv("../Results/Part1/SA_btrain_run_1_iter_1000.csv", header = FALSE,sep=",")
+colnames(data) <- c("time", "Accuracy_test", "Accuracy_train")
+data <- subset(data, data$Accuracy_train >0)
+data$iterationNumber <- seq(1:1000)
+
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_point(aes(y = Accuracy_train, colour = "Accuracy_train"), size= 0.05, na.rm=TRUE) + 
+  geom_point(aes(y = Accuracy_test, colour = "Accuracy_test"),   size= 0.05, na.rm=TRUE) + 
+  labs(title = "Accuracy per Iteration of SA, Start temperature 1E21, cooling rate 1", y = "", x="Iterations")
+data_plot
+#ggsave("bestRHC.pdf")
+```
+
+
+```{r}
+data <- read.csv("../Results/Part1/SA_btrain_run_2_iter_10000.csv", header = FALSE,sep=",")
+colnames(data) <- c("time", "Accuracy_test", "Accuracy_train")
+data <- subset(data, data$Accuracy_train >0)
+data$iterationNumber <- seq(1:10000)
+str(data)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_train, colour = "Accuracy_train"), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_test, colour = "Accuracy_test"), method = 'loess', na.rm=TRUE) + 
+  labs(title = "Accuracy per Iteration of SA, Start temperature 1E11, cooling rate 1", y = "", x="Iterations")
+data_plot
+#ggsave("bestRHC.pdf")
+```
+
+
+
+
+
+# GA
+## A normal GA
+```{r}
+data <- read.csv("../Results/Part1/GA_200_80_10_iter_20000.csv", header = FALSE,sep=",")
+colnames(data) <- c("time", "Accuracy_test", "Accuracy_train")
+data <- subset(data, data$Accuracy_train >0)
+data$iterationNumber <- seq(1:20000)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_train, colour = "Accuracy_train"), method = 'loess', na.rm=TRUE) + 
+  geom_smooth(aes(y = Accuracy_test, colour = "Accuracy_test"), method = 'loess', na.rm=TRUE) + 
+  labs(title = "GA: population=200, mate=80, mutant=10", y = "", x="Iterations")
+data_plot + ylim(50, 100)
+#ggsave("bestRHC.pdf")
+```
+
+## comparison sample size
+```{r}
+data1 <- read.csv("../Results/Part1/GA_100_80_10_iter_20000.csv", header = FALSE,sep=",")
+data2 <- read.csv("../Results/Part1/GA_200_80_10_iter_20000.csv", header = FALSE,sep=",")
+data3 <- read.csv("../Results/Part1/GA_400_80_10_iter_20000.csv", header = FALSE,sep=",")
+
+
+colnames(data1) <- c("time", "Accuracy_test", "Accuracy_train")
+colnames(data2) <- c("time", "Accuracy_test", "Accuracy_train")
+colnames(data3) <- c("time", "Accuracy_test", "Accuracy_train")
+
+data1 <- subset(data1, data1$Accuracy_train >0)
+data2 <- subset(data2, data2$Accuracy_train >0)
+data3 <- subset(data3, data3$Accuracy_train >0)
+
+
+population <- "population100"
+sample2 <- "population200"
+sample3 <- "population400"
+
+data <- as.data.frame(cbind(seq(1:20000),data1$Accuracy_test,data2$Accuracy_test,data3$Accuracy_test))
+colnames(data) <- c("iterationNumber",population, sample2, sample3)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_point(aes(y = population100, colour = population), size=0.5, na.rm=TRUE) + 
+  geom_point(aes(y = population200, colour = sample2), size=0.5,  na.rm=TRUE) + 
+  geom_point(aes(y = population400, colour = sample3), size=0.5,  na.rm=TRUE) + 
+  labs(title = "GA: population={100,200,400}, mate=80, mutant=10", y = "Accuracy of Test", x="Iterations")
+data_plot 
+```
+
+
+
+## comparison mate rate
+```{r}
+data1 <- read.csv("../Results/Part1/GA_400_30_10_iter_20000.csv", header = FALSE,sep=",")
+data2 <- read.csv("../Results/Part1/GA_400_50_10_iter_20000.csv", header = FALSE,sep=",")
+data3 <- read.csv("../Results/Part1/GA_400_80_10_iter_20000.csv", header = FALSE,sep=",")
+
+
+colnames(data1) <- c("time", "Accuracy_test", "Accuracy_train")
+colnames(data2) <- c("time", "Accuracy_test", "Accuracy_train")
+colnames(data3) <- c("time", "Accuracy_test", "Accuracy_train")
+
+data1 <- subset(data1, data1$Accuracy_train >0)
+data2 <- subset(data2, data2$Accuracy_train >0)
+data3 <- subset(data3, data3$Accuracy_train >0)
+
+
+mate <- "mate30"
+sample2 <- "mate50"
+sample3 <- "mate80"
+
+data <- as.data.frame(cbind(seq(1:20000),data1$Accuracy_test,data2$Accuracy_test,data3$Accuracy_test))
+colnames(data) <- c("iterationNumber",mate, sample2, sample3)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_point(aes(y = mate30, colour = mate), size=0.5, na.rm=TRUE) + 
+  geom_point(aes(y = mate50, colour = sample2), size=0.5,  na.rm=TRUE) + 
+  geom_point(aes(y = mate80, colour = sample3), size=0.5,  na.rm=TRUE) + 
+  labs(title = "GA: population=200, mate={30,50,80}, mutant=10", y = "Accuracy of Test", x="Iterations")
+data_plot
+#ggsave("bestRHC.pdf")
+```
+
+
+## comparison mutant rate
+
+```{r}
+data1 <- read.csv("../Results/Part1/GA_200_80_10_iter_20000.csv", header = FALSE,sep=",")
+data2 <- read.csv("../Results/Part1/GA_200_80_30_iter_20000.csv", header = FALSE,sep=",")
+data3 <- read.csv("../Results/Part1/GA_200_80_50_iter_20000.csv", header = FALSE,sep=",")
+
+
+colnames(data1) <- c("time", "Accuracy_test", "Accuracy_train")
+colnames(data2) <- c("time", "Accuracy_test", "Accuracy_train")
+colnames(data3) <- c("time", "Accuracy_test", "Accuracy_train")
+
+data1 <- subset(data1, data1$Accuracy_train >0)
+data2 <- subset(data2, data2$Accuracy_train >0)
+data3 <- subset(data3, data3$Accuracy_train >0)
+
+
+mutate <- "mumate10"
+sample2 <- "mumate30"
+sample3 <- "mumate50"
+
+data <- as.data.frame(cbind(seq(1:20000),data1$Accuracy_test,data2$Accuracy_test,data3$Accuracy_test))
+colnames(data) <- c("iterationNumber",mutate, sample2, sample3)
+data_plot <- ggplot(data, aes(x=iterationNumber)) + 
+  #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+  geom_point(aes(y = mumate10, colour = mutate), size=0.5, na.rm=TRUE) + 
+  geom_point(aes(y = mumate30, colour = sample2), size=0.5, na.rm=TRUE) + 
+  geom_point(aes(y = mumate50, colour = sample3), size=0.5,na.rm=TRUE) + 
+  labs(title = "GA: population=200, mate=80, mutant={10,30,50}", y = "Accuracy of Test", x="Iterations")
+data_plot
+```
+
+
+# Optimization
+
+## Traveling Salesman
+
+```{r}
+data <- read.csv("../Results/Part2/travelingsalesman_n.csv", header = FALSE,sep=",")
+
+
+result1 <- as.data.frame(cbind(data[seq(1,160, by=8),],
+                              data[seq(1,160, by=8)+1,],
+                              data[seq(1,160, by=8)+2,],
+                              data[seq(1,160, by=8)+3,],
+                              data[seq(1,160, by=8)+4,],
+                              data[seq(1,160, by=8)+5,],
+                              data[seq(1,160, by=8)+6,],
+                              data[seq(1,160, by=8)+7,]
+                              ))
+
+
+colnames(result1) <- c("RHC_time","RHC_optimal" ,"SA_time","SA_optimal","GA_time","GA_optimal","MIMIC_time", "MIMIC_optimal")
+result1$Number <- seq(1:20)*200
+data_plot1 <- ggplot(result1,aes(x=Number)) + 
+  geom_point(aes(y = SA_time, colour = "SA"), size= 1,alpha= 0.5, na.rm=TRUE) +
+  geom_point(aes(y = GA_time, colour = "GA"),   size= 0.5,na.rm=TRUE) + 
+  geom_point(aes(y = RHC_time, colour = "RHC"), size= 0.5, alpha = 0.5, na.rm=TRUE) + 
+    geom_point(aes(y = MIMIC_time, colour = "MIMIC"), size= 0.5,  na.rm=TRUE) + 
+
+labs(title = "The optimization of traveling salesman", y = "Training time (s)", x="Iterations (note: MIMIC Iterations/10)")
+
+data_plot1
+
+data_plot2 <- ggplot(result1,aes(x=Number)) +
+  
+  geom_smooth(aes(y = SA_optimal, colour = "SA"), method = 'loess', na.rm=TRUE) +
+  geom_smooth(aes(y = GA_optimal, colour = "GA"),  method = 'loess', ,na.rm=TRUE) + 
+  geom_smooth(aes(y = RHC_optimal, colour = "RHC"), method = 'loess', na.rm=TRUE) + 
+    geom_smooth(aes(y = MIMIC_optimal, colour = "MIMIC"), method = 'loess', na.rm=TRUE) + 
+
+labs(title = "The optimization of traveling salesman", y = "Optimal value", x="Iterations (note: MIMIC Iterations/10)")
+
+data_plot2
+#ggsave("bestRHC.pdf")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+## knapsack 
+```{r}
+data <- as.data.frame(read.csv("../Results/Part2/knapsack_n.csv", header = FALSE,sep=","))
+
+result1 <- as.data.frame(cbind(data[seq(1,800, by=8),],
+                              data[seq(1,800, by=8)+1,],
+                              data[seq(1,800, by=8)+2,],
+                              data[seq(1,800, by=8)+3,],
+                              data[seq(1,800, by=8)+4,],
+                              data[seq(1,800, by=8)+5,],
+                              data[seq(1,800, by=8)+6,],
+                              data[seq(1,800, by=8)+7,]
+                              ))
+
+
+colnames(result1) <- c("RHC_time","RHC_optimal" ,"SA_time","SA_optimal","GA_time","GA_optimal","MIMIC_time", "MIMIC_optimal")
+
+
+colnames(result1) <- c("RHC_time","RHC_optimal" ,"SA_time","SA_optimal","GA_time","GA_optimal","MIMIC_time", "MIMIC_optimal")
+result1$Number <- seq(1:100)*200
+
+data_plot1 <- ggplot(result1,aes(x=Number)) + 
+  geom_point(aes(y = SA_time, colour = "SA"), size= 1,alpha= 0.5, na.rm=TRUE) +
+  geom_point(aes(y = GA_time, colour = "GA"),   size= 0.5,na.rm=TRUE) + 
+  geom_point(aes(y = RHC_time, colour = "RHC"), size= 0.5, alpha = 0.5, na.rm=TRUE) + 
+    geom_point(aes(y = MIMIC_time, colour = "MIMIC"), size= 0.5,  na.rm=TRUE) + 
+
+labs(title = "The optimization of knapsack", y = "Training time (s)", x="Iterations (note: MIMIC Iterations/10)")
+
+data_plot1
+
+data_plot2 <- ggplot(result1,aes(x=Number)) + 
+      #geom_smooth(aes(y = time, colour = time), method = 'loess', na.rm=TRUE) + 
+
+  geom_smooth(aes(y = SA_optimal, colour = "SA"), method = 'loess', na.rm=TRUE) +
+  geom_smooth(aes(y = GA_optimal, colour = "GA"),  method = 'loess', ,na.rm=TRUE) + 
+  geom_smooth(aes(y = RHC_optimal, colour = "RHC"), method = 'loess', na.rm=TRUE) + 
+    geom_smooth(aes(y = MIMIC_optimal, colour = "MIMIC"), method = 'loess', na.rm=TRUE) + 
+
+labs(title = "The optimization of knapsack", y = "Optimal value", x="Iterations (note: MIMIC Iterations/10)")
+
+data_plot2
+```
+
+# continuous peaks
+
+```{r}
+data <- as.data.frame(read.csv("../Results/Part2/continuouspeaks_n.csv", header = FALSE,sep=","))
+
+result1 <- as.data.frame(cbind(data[seq(1,800, by=8),],
+                              data[seq(1,800, by=8)+1,],
+                              data[seq(1,800, by=8)+2,],
+                              data[seq(1,800, by=8)+3,],
+                              data[seq(1,800, by=8)+4,],
+                              data[seq(1,800, by=8)+5,],
+                              data[seq(1,800, by=8)+6,],
+                              data[seq(1,800, by=8)+7,]
+                              ))
+
+
+colnames(result1) <- c("RHC_time","RHC_optimal" ,"SA_time","SA_optimal","GA_time","GA_optimal","MIMIC_time", "MIMIC_optimal")
+result1$Number <- seq(1:100)*200
+data_plot1 <- ggplot(result1,aes(x=Number)) + 
+  geom_point(aes(y = SA_time, colour = "SA"), size= 1,alpha= 0.5, na.rm=TRUE) +
+  geom_point(aes(y = GA_time, colour = "GA"),   size= 0.5,na.rm=TRUE) + 
+  geom_point(aes(y = RHC_time, colour = "RHC"), size= 0.5, alpha = 0.5, na.rm=TRUE) + 
+    geom_point(aes(y = MIMIC_time, colour = "MIMIC"), size= 0.5,  na.rm=TRUE) + 
+
+labs(title = "The optimization of continuous peaks (N=60, T=6)", y = "Training time (s)", x="Iterations (note: MIMIC Iterations/10)")
+
+data_plot1
+
+data_plot2 <- ggplot(result1,aes(x=Number)) + 
+  
+  geom_smooth(aes(y = SA_optimal, colour = "SA"), method = 'loess', na.rm=TRUE) +
+  geom_smooth(aes(y = GA_optimal, colour = "GA"),  method = 'loess', ,na.rm=TRUE) + 
+  geom_smooth(aes(y = RHC_optimal, colour = "RHC"), method = 'loess', na.rm=TRUE) + 
+    geom_smooth(aes(y = MIMIC_optimal, colour = "MIMIC"), method = 'loess', na.rm=TRUE) + 
+
+labs(title = "The optimization of continuous peaks (N=60, T=6)", y = "Optimal value", x="Iterations (note: MIMIC Iterations/10)")
+
+data_plot2
+```
